@@ -1,0 +1,16 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "Function",
+    "extends": "./base.json",
+    "compilerOptions": {
+      "target": "es2016",
+      "module": "commonjs",
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "strict": true,
+      "skipLibCheck": true
+    },
+    "include": ["src"],
+    "exclude": ["node_modules"]
+  }
+  

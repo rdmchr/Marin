@@ -1,0 +1,16 @@
+{
+  "name": "create-list",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.20",
+    "typescript": "^4.5.5"
+  },
+  "dependencies": {
+    "node-appwrite": "^4.0.2"
+  }
+}
