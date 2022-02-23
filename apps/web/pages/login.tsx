@@ -60,7 +60,7 @@ export default function Login() {
                 <Form>
                     <Field name='email' validate={validateEmail}>
                         {({ field, form }: {field: FieldInputProps<any>, form: FormikState<any>}) => (
-                            <FormControl isInvalid={(form.errors.email as string | undefined) && (form.touched.email as string | undefined) ? true : false}>
+                            <FormControl isInvalid={form.errors.email && (form.touched.email? true : false)}>
                                 <FormLabel htmlFor='email'>Email address</FormLabel>
                                 <Input {...field} id='email' type="email" />
                                 <FormErrorMessage>{form.errors.email}</FormErrorMessage>
@@ -69,7 +69,7 @@ export default function Login() {
                     </Field>
                     <Field name='password' validate={validatePassword}>
                         {({ field, form }: {field: FieldInputProps<any>, form: FormikState<any>}) => (
-                            <FormControl isInvalid={(form.errors.password as string | undefined) && (form.touched.password as string | undefined) ? true : false}>
+                            <FormControl isInvalid={form.errors.password && (form.touched.password? true : false)}>
                                 <FormLabel htmlFor='password'>Password</FormLabel>
                                 <Input {...field} id='password' type="password" />
                                 <FormErrorMessage>{form.errors.password}</FormErrorMessage>
