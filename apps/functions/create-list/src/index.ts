@@ -15,7 +15,7 @@ appwrite.setEndpoint('https://api.gettooru.com/v1').setProject(projectId).setKey
 const database = new sdk.Database(appwrite);
 
 async function createList() {
-    await database.createDocument(listCollection, 'unique()', {name: data.name}, [userId], [userId]);
+    await database.createDocument(listCollection, 'unique()', {name: data.name}, [`user:${userId}`], [`user:${userId}`]);
 }
 
 createList();
