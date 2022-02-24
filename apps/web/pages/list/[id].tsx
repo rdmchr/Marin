@@ -1,9 +1,15 @@
-import { ArrowBackIcon } from "@chakra-ui/icons";
-import { Box, Button, Divider, IconButton, Input, InputGroup, InputRightElement, Text } from "@chakra-ui/react";
+import { ArrowBackIcon, PlusSquareIcon } from "@chakra-ui/icons";
+import { Box, Button, Divider, FormControl, FormErrorMessage, FormLabel, IconButton, Input, InputGroup, InputRightElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure } from "@chakra-ui/react";
+import { Field, FieldInputProps, Form, Formik, FormikState } from "formik";
 import { useRouter } from "next/router";
 import { SetStateAction, useEffect, useState } from "react";
 import { appwrite } from "../../appwrite";
+import { APPWRITE_INVITE_MEMBER_FUNC } from "../../appwrite/constants";
 import { AWList } from "../../appwrite/types";
+
+interface FormValues {
+    email: string;
+}
 
 export default function List() {
     const router = useRouter();
@@ -12,6 +18,7 @@ export default function List() {
     const [error, setError] = useState<string | null>(null);
     const [listData, setList] = useState<AWList | null>();
     const [item, setItem] = useState('')
+    const { isOpen, onOpen, onClose } = useDisclosure()
 
     async function fetchList() {
         await appwrite.database.getDocument<AWList>('62114ed22004848a2dcf', id as string).then((res) => {
@@ -68,6 +75,25 @@ export default function List() {
         router.back();
     }
 
+    function validateEmail(value: string) {
+        let error;
+        if (!value) {
+            error = 'Required';
+        } else if (
+            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)
+        ) {
+            error = 'Invalid email address';
+        }
+        return error;
+    }
+
+    async function inviteMember(values: FormValues, { setErrors }: any) {
+        const { email } = values;
+        await appwrite.functions.createExecution(APPWRITE_INVITE_MEMBER_FUNC, JSON.stringify({ list: id, email }));
+        onClose();
+    }
+
+
     if (error) {
         return (
             <>
@@ -91,6 +117,7 @@ export default function List() {
             <div style={{ display: "flex", alignItems: "center", justifyItems: "left" }}>
                 <IconButton aria-label="Back" icon={<ArrowBackIcon />} onClick={back} size="sm" style={{ marginRight: "15px" }} />
                 <Text fontSize="2xl">{listData.name}</Text>
+                <IconButton aria-label="Add member" icon={<PlusSquareIcon />} size="sm" style={{ marginLeft: "15px" }} onClick={onOpen} />
             </div>
             <Divider />
             <Box style={{ display: "flex", flexDirection: "column" }}>
@@ -111,6 +138,40 @@ export default function List() {
                     </Button>
                 </InputRightElement>
             </InputGroup>
+
+            <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Invite user to list</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Formik
+                            initialValues={{ email: '' }}
+                            onSubmit={inviteMember}
+                        >{(props) => (
+                            <Form>
+                                <Field name='email' validate={validateEmail}>
+                                    {({ field, form }: { field: FieldInputProps<any>, form: FormikState<any> }) => (
+                                        <FormControl isInvalid={form.errors.email && (form.touched.email ? true : false)}>
+                                            <FormLabel htmlFor='email'>List name</FormLabel>
+                                            <Input {...field} id='email' type="email" />
+                                            <FormErrorMessage>{form.errors.email}</FormErrorMessage>
+                                        </FormControl>
+                                    )}
+                                </Field>
+                                <Text color="red" fontSize='sm'>{error}</Text>
+                                <ModalFooter>
+                                    <Button colorScheme='red' mr={3} onClick={onClose}>
+                                        Cancel
+                                    </Button>
+                                    <Button variant='ghost' isLoading={props.isSubmitting} type='submit'>Create</Button>
+                                </ModalFooter>
+                            </Form>
+                        )}
+                        </Formik>
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
         </Box>
     );
 }
