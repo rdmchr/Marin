@@ -1,6 +1,6 @@
 {
   "extends": "tsconfig/function.json",
-  "include": ["**/*.ts"],
+  "include": ["src/*.ts"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "rootDir": "./src",
