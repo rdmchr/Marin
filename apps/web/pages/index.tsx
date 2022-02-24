@@ -109,8 +109,6 @@ export default function Home() {
             )}
             </Formik>
           </ModalBody>
-
-
         </ModalContent>
       </Modal>
     </>
