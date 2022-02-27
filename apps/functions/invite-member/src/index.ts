@@ -17,6 +17,10 @@ type AWList = {
     name: string;
 } & Models.Document;
 
+type AWUser = {
+    email: string;
+} & Models.Document;
+
 async function createInvite() {
     const { list, email } = data;
 
@@ -42,14 +46,20 @@ async function createInvite() {
     }
 
     // find user using email
-    const user = await database.listDocuments(usersCollection, [Query.equal("email", email)]).then((res) => { return res.documents[0] }, (err) => { throw err });
+    const user = await database.listDocuments<AWUser>(usersCollection, [Query.equal("email", email)]).then((res) => { return res.documents[0] }, (err) => { throw err });
     if (!user) {
         console.error('User not found');
         process.exit(2);
     }
 
+    // get sender document
+    const sender = await database.getDocument<AWUser>(usersCollection, userId).then((res) => { return res }, (err) => { throw err });
+
     // grant user read access to list
-    await database.updateDocument(listCollection, list, {name: listDoc.name}, [...listDoc.$read, `user:${user.$id}`]);
+    await database.updateDocument(listCollection, list, { name: listDoc.name }, [...listDoc.$read, `user:${user.$id}`]);
+
+    // grant addressee read access to sender document
+    await database.updateDocument(usersCollection, userId, {email: sender.email}, [...sender.$read, `user:${user.$id}`]);
 
     // create invite
     await database.createDocument(invitesCollection, 'unique()', {
