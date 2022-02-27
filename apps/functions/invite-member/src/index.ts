@@ -1,4 +1,4 @@
-import sdk from 'node-appwrite';
+import sdk, { Models } from 'node-appwrite';
 import { Query } from './Query';
 
 const listCollection = process.env.LIST_COLLECTION as string;
@@ -13,8 +13,12 @@ const appwrite = new sdk.Client();
 appwrite.setEndpoint('https://api.gettooru.com/v1').setProject(projectId).setKey(apiKey);
 const database = new sdk.Database(appwrite);
 
+type AWList = {
+    name: string;
+} & Models.Document;
+
 async function createInvite() {
-    const {list, email} = data;
+    const { list, email } = data;
 
     if (!list) {
         throw new Error('Missing required parameter: list');
@@ -23,9 +27,9 @@ async function createInvite() {
     if (!email) {
         throw new Error('Missing required parameter: email');
     }
-    
+
     // check user permission
-    const listDoc = await database.getDocument(listCollection, list).then((res) => {
+    const listDoc = await database.getDocument<AWList>(listCollection, list).then((res) => {
         return res;
     }, (err) => {
         throw err;
@@ -43,6 +47,9 @@ async function createInvite() {
         console.error('User not found');
         process.exit(2);
     }
+
+    // grant user read access to list
+    await database.updateDocument(listCollection, list, {name: listDoc.name}, [...listDoc.$read, `user:${user.$id}`]);
 
     // create invite
     await database.createDocument(invitesCollection, 'unique()', {
