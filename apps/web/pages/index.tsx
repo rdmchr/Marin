@@ -35,28 +35,32 @@ export default function Home() {
 
   // retrieves all current ivnites for the user
   async function getInvites() {
-    const inv = await appwrite.database.listDocuments<AWInvite>(APPWRITE_INVITES_COLLECTION).then((res) => {
+    const invData = await appwrite.database.listDocuments<AWInvite>(APPWRITE_INVITES_COLLECTION).then((res) => {
       if (res.sum === 0) {
         setInvites([]);
       }
-      const invitations: AWInvite[] = [];
-      res.documents.forEach(async (element) => {
-        // fetch list name
-        getListName(element.list).then((listName) => {
-          // fetch sender name
-          appwrite.database.getDocument<AWLedgerUser>(APPWRITE_USERS_COLLECTION, element.sender).then((sender) => {
-            invitations.push({ ...element, listName, senderName: sender.name });
-          }, (err) => {
-            console.log(err.message)
-          });
-        });
-      });
-      return invitations;
+      return res.documents;
+    }, (err) => {
+      console.log(err.message)
+      return [];
     }
     );
-    setInvites(inv);
-      console.log(typeof inv)
-      console.log(inv);
+
+    const invitations: AWInvite[] = [];
+    for (const element of invData) {
+      // fetch list name
+      getListName(element.list).then((listName) => {
+        // fetch sender name
+        appwrite.database.getDocument<AWLedgerUser>(APPWRITE_USERS_COLLECTION, element.sender).then((sender) => {
+          invitations.push({ ...element, listName, senderName: sender.name });
+        }, (err) => {
+          console.log(err.message)
+        });
+      });
+    };
+    setInvites(invitations);
+    console.log(typeof invitations)
+    console.log(invitations);
 
   }
 
@@ -148,7 +152,7 @@ export default function Home() {
       }
       <Divider />
       <Text>Your invitations</Text>
-    {!invites ? <Text>No invitations found</Text> :
+      {!invites ? <Text>No invitations found</Text> :
         invites.map((invite) => {
           console.log(invite);
           return (
