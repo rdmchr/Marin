@@ -35,33 +35,22 @@ export default function Home() {
 
   // retrieves all current ivnites for the user
   async function getInvites() {
-    const invData = await appwrite.database.listDocuments<AWInvite>(APPWRITE_INVITES_COLLECTION).then((res) => {
-      if (res.sum === 0) {
-        setInvites([]);
-      }
-      return res.documents;
-    }, (err) => {
-      console.log(err.message)
-      return [];
-    }
-    );
+    const { documents } = await appwrite.database.listDocuments<AWInvite>(APPWRITE_INVITES_COLLECTION);
 
     const invitations: AWInvite[] = [];
-    for (const element of invData) {
+    for (const element of documents) {
       // fetch list name
-      getListName(element.list).then((listName) => {
-        // fetch sender name
-        appwrite.database.getDocument<AWLedgerUser>(APPWRITE_USERS_COLLECTION, element.sender).then((sender) => {
-          invitations.push({ ...element, listName, senderName: sender.name });
-        }, (err) => {
-          console.log(err.message)
-        });
-      });
-    };
-    setInvites(invitations);
-    console.log(typeof invitations)
-    console.log(invitations);
+      const listName = await getListName(element.list);
 
+      // fetch sender name
+      const { email } = await appwrite.database.getDocument<AWLedgerUser>(APPWRITE_USERS_COLLECTION, element.sender);
+      invitations.push({
+        ...element,
+        listName,
+        senderEmail: email,
+      });
+    }
+    setInvites(invitations);
   }
 
   async function getData() {
@@ -78,7 +67,7 @@ export default function Home() {
   }
 
   // gets the name of a list using a given id
-  function getListName(listId: string) {
+  function getListName(listId: string): Promise<string> {
     const listName = appwrite.database.getDocument<AWList>(APPWRITE_LIST_COLLECTION, listId).then((res) => {
       return res.name;
     }, (err) => {
@@ -154,10 +143,9 @@ export default function Home() {
       <Text>Your invitations</Text>
       {!invites ? <Text>No invitations found</Text> :
         invites.map((invite) => {
-          console.log(invite);
           return (
             <Box key={invite.$id}>
-              <Text>Sender: {invite.senderName}</Text>
+              <Text>Sender: {invite.senderEmail}</Text>
               <Text>List: {invite.listName}</Text>
             </Box>
           )

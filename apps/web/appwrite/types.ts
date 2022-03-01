@@ -8,7 +8,7 @@ export type AWList = {
 
 export type AWInvite = {
     sender: string;
-    senderName?: string;
+    senderEmail?: string;
     addressee: string;
     list: string;
     listName?: string;
