@@ -131,7 +131,7 @@ export default function List() {
             </Box>
             <Divider />
             <InputGroup size='md'>
-                <Input variant="filled" placeholder="Add an item" value={item} onChange={handleChange} />
+                <Input variant="filled" placeholder="Add an item" value={item} onChange={handleChange} onSubmit={addItem} />
                 <InputRightElement width='4.5rem'>
                     <Button h='1.75rem' size='sm' onClick={addItem} color="cyan.500">
                         Add item
@@ -153,7 +153,7 @@ export default function List() {
                                 <Field name='email' validate={validateEmail}>
                                     {({ field, form }: { field: FieldInputProps<any>, form: FormikState<any> }) => (
                                         <FormControl isInvalid={form.errors.email && (form.touched.email ? true : false)}>
-                                            <FormLabel htmlFor='email'>List name</FormLabel>
+                                            <FormLabel htmlFor='email'>User Email</FormLabel>
                                             <Input {...field} id='email' type="email" />
                                             <FormErrorMessage>{form.errors.email}</FormErrorMessage>
                                         </FormControl>
@@ -164,7 +164,7 @@ export default function List() {
                                     <Button colorScheme='red' mr={3} onClick={onClose}>
                                         Cancel
                                     </Button>
-                                    <Button variant='ghost' isLoading={props.isSubmitting} type='submit'>Create</Button>
+                                    <Button variant='ghost' isLoading={props.isSubmitting} type='submit'>Invite User</Button>
                                 </ModalFooter>
                             </Form>
                         )}
