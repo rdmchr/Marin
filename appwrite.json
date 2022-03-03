@@ -1,0 +1,35 @@
+{
+    "projectId": "62114ec09114aca3c72c",
+    "projectName": "Marin",
+    "functions": [
+        {
+            "$id": "621e144f8f6ebc3fc644",
+            "name": "accept-invite",
+            "runtime": "node-16.0",
+            "path": "./",
+            "entrypoint": "apps/functions/accept-invite/dist/index.js"
+        },
+        {
+            "$id": "6217f539106812ed26a4",
+            "name": "invite-member",
+            "runtime": "node-16.0",
+            "path": "./",
+            "entrypoint": "apps/functions/invite-member/dist/index.js"
+        },
+        {
+            "$id": "6217e8063c66b1cf686d",
+            "name": "email-ledger ",
+            "runtime": "node-16.0",
+            "path": "./",
+            "entrypoint": "apps/functions/email-ledger/dist/index.js"
+        },
+        {
+            "$id": "62163ad27113f60192ff",
+            "name": "create-list ",
+            "runtime": "node-16.0",
+            "path": "./",
+            "entrypoint": "apps/functions/create-list/dist/index.js"
+        }
+
+    ]
+}
