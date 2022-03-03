@@ -46,7 +46,7 @@ async function createInvite() {
     }
 
     // get sender document
-    const sender = await database.getDocument<AWUser>(usersCollection, userId).then((res) => { return res }, (err) => { throw err });
+    const sender = await database.getDocument<AWLedgerUser>(usersCollection, userId).then((res) => { return res }, (err) => { throw err });
 
     // grant user read access to list
     await database.updateDocument(listCollection, list, { name: listDoc.name }, [...listDoc.$read, `user:${user.$id}`]);
