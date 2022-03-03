@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { APPWRITE_INVITES_COLLECTION, APPWRITE_CREATE_LIST_FUNC, APPWRITE_LIST_COLLECTION, APPWRITE_USERS_COLLECTION } from '../appwrite/constants';
 import { Field, FieldInputProps, Form, Formik, FormikState, FormikValues, setIn } from 'formik';
-import { AWAccount, AWInvite, AWLedgerUser, AWList } from '../appwrite/types';
+import { AWAccount, AWInvite, AWLedgerUser, AWList } from 'appwrite-data/types/web';
 
 export default function Home() {
   const router = useRouter();

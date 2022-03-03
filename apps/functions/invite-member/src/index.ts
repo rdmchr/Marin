@@ -1,5 +1,6 @@
 import sdk, { Models } from 'node-appwrite';
 import { Query } from './Query';
+import {AWLedgerUser, AWList} from "appwrite-data/types/node"
 
 const listCollection = process.env.LIST_COLLECTION as string;
 const usersCollection = process.env.USERS_COLLECTION as string;
@@ -12,14 +13,6 @@ const data = JSON.parse(process.env.APPWRITE_FUNCTION_DATA as string);
 const appwrite = new sdk.Client();
 appwrite.setEndpoint('https://api.gettooru.com/v1').setProject(projectId).setKey(apiKey);
 const database = new sdk.Database(appwrite);
-
-type AWList = {
-    name: string;
-} & Models.Document;
-
-type AWUser = {
-    email: string;
-} & Models.Document;
 
 async function createInvite() {
     const { list, email } = data;
@@ -46,7 +39,7 @@ async function createInvite() {
     }
 
     // find user using email
-    const user = await database.listDocuments<AWUser>(usersCollection, [Query.equal("email", email)]).then((res) => { return res.documents[0] }, (err) => { throw err });
+    const user = await database.listDocuments<AWLedgerUser>(usersCollection, [Query.equal("email", email)]).then((res) => { return res.documents[0] }, (err) => { throw err });
     if (!user) {
         console.error('User not found');
         process.exit(2);

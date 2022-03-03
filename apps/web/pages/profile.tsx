@@ -3,7 +3,7 @@ import { Models } from "appwrite";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { appwrite } from "../appwrite";
-import { AWAccount } from "../appwrite/types";
+import { AWAccount } from "appwrite-data/types/web";
 
 export default function Profile() {
     const router = useRouter();

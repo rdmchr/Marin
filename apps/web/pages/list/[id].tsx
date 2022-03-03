@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { SetStateAction, useEffect, useState } from "react";
 import { appwrite } from "../../appwrite";
 import { APPWRITE_INVITE_MEMBER_FUNC } from "../../appwrite/constants";
-import { AWList } from "../../appwrite/types";
+import { AWList } from "appwrite-data/types/web";
 
 interface FormValues {
     email: string;
