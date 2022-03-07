@@ -6,7 +6,8 @@
   "files": [
     "types/index.ts",
     "types/web.ts",
-    "types/node.ts"
+    "types/node.ts",
+    "constants.ts"
   ],
   "dependencies": {
     "appwrite": "^7.0.0",

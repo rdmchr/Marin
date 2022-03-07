@@ -1,6 +1,6 @@
 import sdk from 'node-appwrite';
+import { APPWRITE_COLLECTION_LISTS, APPWRITE_ENDPOINT } from 'appwrite-data/constants'
 
-const listCollection = '62114ed22004848a2dcf';
 const apiKey = process.env.API_KEY as string;
 const projectId = process.env.APPWRITE_FUNCTION_PROJECT_ID as string;
 const userId = process.env.APPWRITE_FUNCTION_USER_ID as string;
@@ -11,11 +11,11 @@ if (!data.name) {
 }
 
 const appwrite = new sdk.Client();
-appwrite.setEndpoint('https://api.gettooru.com/v1').setProject(projectId).setKey(apiKey);
+appwrite.setEndpoint(APPWRITE_ENDPOINT).setProject(projectId).setKey(apiKey);
 const database = new sdk.Database(appwrite);
 
 async function createList() {
-    await database.createDocument(listCollection, 'unique()', {name: data.name}, [`user:${userId}`], [`user:${userId}`]);
+    await database.createDocument(APPWRITE_COLLECTION_LISTS, 'unique()', {name: data.name}, [`user:${userId}`], [`user:${userId}`]);
 }
 
 createList();

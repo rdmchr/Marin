@@ -3,7 +3,7 @@ import { appwrite } from '../appwrite'
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { APPWRITE_INVITES_COLLECTION, APPWRITE_CREATE_LIST_FUNC, APPWRITE_LIST_COLLECTION, APPWRITE_USERS_COLLECTION } from '../appwrite/constants';
+import { APPWRITE_COLLECTION_INVITES, APPWRITE_COLLECTION_LISTS, APPWRITE_COLLECTION_USERS, APPWRITE_FUNCTION_CREATE_LIST } from 'appwrite-data/constants';
 import { Field, FieldInputProps, Form, Formik, FormikState, FormikValues, setIn } from 'formik';
 import { AWAccount, AWInvite, AWLedgerUser, AWList } from 'appwrite-data/types/web';
 
@@ -20,8 +20,8 @@ export default function Home() {
 
   // retrieves the users lists
   async function getLists() {
-    appwrite.database.listDocuments(APPWRITE_LIST_COLLECTION).then((res) => {
-      if (res.sum === 0) {
+    appwrite.database.listDocuments(APPWRITE_COLLECTION_LISTS).then((res) => {
+      if (res.total === 0) {
         setLists([]);
         setError('No lists found');
       }
@@ -36,7 +36,7 @@ export default function Home() {
 
   // retrieves all current ivnites for the user
   async function getInvites() {
-    const { documents } = await appwrite.database.listDocuments<AWInvite>(APPWRITE_INVITES_COLLECTION);
+    const { documents } = await appwrite.database.listDocuments<AWInvite>(APPWRITE_COLLECTION_INVITES);
 
     const invitations: AWInvite[] = [];
     for (const element of documents) {
@@ -44,7 +44,7 @@ export default function Home() {
       const listName = await getListName(element.list);
 
       // fetch sender name
-      const { email } = await appwrite.database.getDocument<AWLedgerUser>(APPWRITE_USERS_COLLECTION, element.sender);
+      const { email } = await appwrite.database.getDocument<AWLedgerUser>(APPWRITE_COLLECTION_USERS, element.sender);
       invitations.push({
         ...element,
         listName,
@@ -71,7 +71,7 @@ export default function Home() {
 
   // gets the name of a list using a given id
   function getListName(listId: string): Promise<string> {
-    const listName = appwrite.database.getDocument<AWList>(APPWRITE_LIST_COLLECTION, listId).then((res) => {
+    const listName = appwrite.database.getDocument<AWList>(APPWRITE_COLLECTION_LISTS, listId).then((res) => {
       return res.name;
     }, (err) => {
       console.log(err)
@@ -93,7 +93,7 @@ export default function Home() {
    * once an update is made to the lists collection an update will be triggered
    */
   async function setupRealtime() {
-    const unsubscribe = appwrite.subscribe([`collections.${APPWRITE_LIST_COLLECTION}.documents`, `collections.${APPWRITE_INVITES_COLLECTION}.documents`], () => { getData() });
+    const unsubscribe = appwrite.subscribe([`collections.${APPWRITE_COLLECTION_LISTS}.documents`, `collections.${APPWRITE_COLLECTION_INVITES}.documents`], () => { getData() });
     router.events.on("routeChangeStart", () => { // make sure to unscubscribe when the route changes
       unsubscribe();
       return true;
@@ -103,7 +103,7 @@ export default function Home() {
   // creates a new list
   async function createList(values: FormikValues) {
     onClose();
-    appwrite.functions.createExecution(APPWRITE_CREATE_LIST_FUNC, JSON.stringify({ name: values.name }));
+    appwrite.functions.createExecution(APPWRITE_FUNCTION_CREATE_LIST, JSON.stringify({ name: values.name }));
     setIsLoading(true);
   }
 

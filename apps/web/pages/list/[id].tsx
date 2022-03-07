@@ -4,7 +4,7 @@ import { Field, FieldInputProps, Form, Formik, FormikState } from "formik";
 import { useRouter } from "next/router";
 import { SetStateAction, useEffect, useState } from "react";
 import { appwrite } from "../../appwrite";
-import { APPWRITE_INVITE_MEMBER_FUNC } from "../../appwrite/constants";
+import { APPWRITE_FUNCTION_INVITE_MEMBER } from "appwrite-data/constants";
 import { AWList } from "appwrite-data/types/web";
 
 interface FormValues {
@@ -89,7 +89,7 @@ export default function List() {
 
     async function inviteMember(values: FormValues, { setErrors }: any) {
         const { email } = values;
-        await appwrite.functions.createExecution(APPWRITE_INVITE_MEMBER_FUNC, JSON.stringify({ list: id, email }));
+        await appwrite.functions.createExecution(APPWRITE_FUNCTION_INVITE_MEMBER, JSON.stringify({ list: id, email }));
         onClose();
     }
 
