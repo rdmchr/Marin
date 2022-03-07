@@ -12,7 +12,7 @@
     "tsconfig": "*"
   },
   "dependencies": {
-    "node-appwrite": "^4.0.2",
+    "node-appwrite": "^5.0.0",
     "appwrite-data": "*"
   }
 }
